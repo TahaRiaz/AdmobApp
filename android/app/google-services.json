@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "802118238928",
+    "firebase_url": "https://admob-march2020.firebaseio.com",
+    "project_id": "admob-march2020",
+    "storage_bucket": "admob-march2020.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802118238928:android:e871842ba1002fb5fc54d5",
+        "android_client_info": {
+          "package_name": "com.Innova8ors.elearn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "802118238928-9jg21cib4q8vs1gbttojc0klobv14h1j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCOOanD9c1AgelKMmM3q-Sry3MnPXh8kI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "802118238928-9jg21cib4q8vs1gbttojc0klobv14h1j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
