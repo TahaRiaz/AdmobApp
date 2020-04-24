@@ -1,5 +1,6 @@
 import 'package:elearn/Constant.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 
 class InviteFriends extends StatefulWidget {
 
@@ -21,11 +22,13 @@ class _InviteFriendsState extends State<InviteFriends> {
           letterSpacing: 1,
           fontSize: 20
         ),),
-        leading: GestureDetector(
-            onTap: (){
-
-            },
-            child: Icon(Icons.arrow_back_ios)),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios,
+          color: Colors.white),
+          onPressed: (){
+            Navigator.pop(context);
+          },
+        )
       ),
       body: Stack(
         children: <Widget>[
@@ -62,7 +65,7 @@ class _InviteFriendsState extends State<InviteFriends> {
                   ),
                   child: FlatButton(
                       onPressed: ( ){
-
+                        Share.share('Binate Forum');
                       },
                       child: Text('INVITE NOW',
                       style: TextStyle(

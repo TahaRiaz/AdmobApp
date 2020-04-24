@@ -3,10 +3,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../BlogView.dart';
 import '../Constant.dart';
 
 
 class AdminBlogContainer extends StatefulWidget {
+
+  final String url;
+  final String title;
+  final String writer;
+  final String date;
+  final String description;
+  final String summary;
+  final String docId;
+
+  AdminBlogContainer({this.url,this.writer,this.description,this.title,this.date,this.summary,this.docId});
 
   @override
   _AdminBlogContainerState createState() => _AdminBlogContainerState();
@@ -17,17 +28,19 @@ class _AdminBlogContainerState extends State<AdminBlogContainer> {
   Widget build(BuildContext context) {
 
     var media = MediaQuery.of(context).size;
-    var now = DateTime.now();
+    var now = DateTime.parse(widget.date);
 
     return GestureDetector(
       onTap: (){
-//            Navigator.push(context, MaterialPageRoute(
-//                builder: (context){
-//                    return BlogView(url: widget.url,
-//                        title: widget.title,
-//                        description: widget.description);
-//                }
-//            ));
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context){
+                    return BlogView(url: widget.url,
+                      title: widget.title,
+                      writer: widget.writer,
+                      description: widget.description,
+                      label: 'Written By: ',);
+                }
+            ));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
@@ -53,8 +66,7 @@ class _AdminBlogContainerState extends State<AdminBlogContainer> {
                       bottomLeft: Radius.circular(5),
                     ),
                   ),
-                  child: Image.asset('assets/images/pic.png',
-                  fit: BoxFit.fill)
+                  child: Image.network(widget.url,fit: BoxFit.fill)
               ),
               SizedBox(
                 width: 10,
@@ -85,7 +97,7 @@ class _AdminBlogContainerState extends State<AdminBlogContainer> {
                                                       showDialog(
                                                         context: context,
                                                       builder: (context){
-                                                          return dialog();
+                                                          return dialog(docId: widget.docId,context: context,collection: 'Blogs');
                                                       });
                                                     },
                                                     child: Text('Delete Post',
@@ -99,14 +111,16 @@ class _AdminBlogContainerState extends State<AdminBlogContainer> {
                                         );
                                       });
                                 },
-                                child: Image.asset('assets/images/option.png')),
+                                child: Container(
+                                    width: 40,
+                                    child: Image.asset('assets/images/option.png'))),
                           ),
                         ],
                       ),
                       SizedBox(
                         height: 5,
                       ),
-                      Text('Title',
+                      Text(widget.title,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
@@ -114,7 +128,7 @@ class _AdminBlogContainerState extends State<AdminBlogContainer> {
                       SizedBox(
                         height: 10,
                       ),
-                      Text('Description',
+                      Text(widget.summary,
                         style: TextStyle(
                           fontSize: 15,
                         ),),
@@ -130,7 +144,7 @@ class _AdminBlogContainerState extends State<AdminBlogContainer> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold
                                 ),),
-                              Text('Innova8ors'),
+                              Text(widget.writer),
                             ],
                           ),
                           ),

@@ -20,6 +20,7 @@ class _AllItemState extends State<AllItem> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: mainColor,
         centerTitle: true,
         title: Text(widget.category,
         style: TextStyle(
@@ -27,7 +28,12 @@ class _AllItemState extends State<AllItem> {
           fontWeight: FontWeight.bold,
         ),
         ),
-        leading: Icon(Icons.arrow_back_ios),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios,
+            color: whiteColor),
+            onPressed: (){
+              Navigator.pop(context);
+            }),
       ),
       body: Stack(
         children: <Widget>[
@@ -61,11 +67,14 @@ class _AllItemState extends State<AllItem> {
                         InfoContainer container;
 
                         for(var arr in article){
+
                           final title = arr.data['title'];
                           final description = arr.data['description'];
                           final url = arr.data['image'];
+                          final date = arr.data['date'];
+                          final summary = arr.data['summary'];
 
-                          container = InfoContainer(title: title,description: description,url: url,);
+                          container = InfoContainer(title: title,description: description,url: url,summary: summary,date: date,category: widget.category,);
                           list.add(container);
                         }
                         return Column(

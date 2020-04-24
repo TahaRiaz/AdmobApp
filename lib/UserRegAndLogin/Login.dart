@@ -1,9 +1,14 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:elearn/AdminPanel/AddArticle.dart';
+import 'package:elearn/AdminPanel/AdminHome.dart';
 import 'package:elearn/Constant.dart';
 import 'package:elearn/Home.dart';
 import 'package:elearn/UserRegAndLogin/ForgetPassword.dart';
 import 'package:elearn/UserRegAndLogin/Registration.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
@@ -20,6 +25,12 @@ class _LoginState extends State<Login> {
   final _controllerPassword = TextEditingController();
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   FirebaseUser user;
+  Firestore _firestore = Firestore.instance;
+
+  var username;
+  var coins;
+  var image;
+  var email;
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +80,10 @@ class _LoginState extends State<Login> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 25),
                   child: TextField(
+                    style: TextStyle(
+                      color: whiteColor,
+                      fontSize: 20
+                    ),
                     controller: _controllerEmail,
                     decoration: InputDecoration(
                       hintText: 'Enter Email',
@@ -85,21 +100,77 @@ class _LoginState extends State<Login> {
                   padding: EdgeInsets.symmetric(horizontal: 25),
                   child: Builder(
                     builder:(context) => TextField(
+                      style: TextStyle(
+                        color: whiteColor,
+                      ),
                       obscureText: true,
                       controller: _controllerPassword,
                       decoration: InputDecoration(
                         suffixIcon: GestureDetector(
                           onTap: ()async{
-                            if(_controllerEmail.text == 'admin@admin.com' && _controllerPassword.text == 'camera1010'){
-                              Navigator.pushNamed(context, AddArticle.id);
-                            }
-                            else{
-                              try{
-                                AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(email: _controllerEmail.text, password: _controllerPassword.text);
+
+                              try {
+                                AuthResult result = await _firebaseAuth
+                                    .signInWithEmailAndPassword(
+                                    email: _controllerEmail.text,
+                                    password: _controllerPassword.text);
                                 user = result.user;
-                                Navigator.pushNamed(context, Home.id);
-                              }
-                              catch(e){
+
+                                if (_controllerEmail.text ==
+                                    'admin@admin.com' &&
+                                    _controllerPassword.text == 'camera1010') {
+                                  Navigator.pushNamed(context, AdminHome.id);
+                                }
+
+                                else{
+
+                                  try{
+                                    DocumentSnapshot snapshot = await _firestore
+                                        .collection('Users')
+                                        .document('${user.uid}').get();
+
+                                    if(snapshot.exists){
+
+
+                                    var username = snapshot['username'];
+                                    var email = snapshot['email'];
+                                    var coins = snapshot['coins'];
+                                    var image = snapshot['image'];
+                                    var blogs = snapshot['blogs'];
+
+                                    Navigator.push(context, MaterialPageRoute(
+                                        builder: (context) {
+                                          return Home(username: username,
+                                            email: email,
+                                            coins: coins,
+                                            uid: user.uid,
+                                            url: image,
+                                            blogs: blogs,);
+                                        }
+                                    ));}
+                                    else{
+                                      setState(() {
+                                        Scaffold.of(context).showSnackBar(
+                                            SnackBar(content: Text('Your account has been deleted and you '
+                                                'no longer will be able to access this app using this email.'),
+                                              duration: Duration(seconds: 6),
+                                              behavior: SnackBarBehavior.fixed,
+                                            ));
+                                      });
+                                    }
+                                  }
+                                  catch(e){
+                                    setState(() {
+                                      Scaffold.of(context).showSnackBar(
+                                          SnackBar(content: Text(e.message),
+                                            duration: Duration(seconds: 3),
+                                            behavior: SnackBarBehavior.fixed,
+                                          ));
+                                    });
+                                  }
+                                  }
+                                }
+                              catch (e) {
                                 setState(() {
                                   Scaffold.of(context).showSnackBar(
                                       SnackBar(content: Text(e.message),
@@ -108,33 +179,64 @@ class _LoginState extends State<Login> {
                                       ));
                                 });
                               }
-                            }
+
                           },
-                          child: Icon(Icons.arrow_forward,
-                          color: Colors.white,),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: whiteColor,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(Icons.arrow_forward,
+                            color: mainColor),
+                          ),
                         ),
                           hintText: 'Password',
                         hintStyle: TextStyle(
-                          color: Colors.white
+                          color: Colors.white,
+                          fontSize: 20
                         )
                       ),
                     ),
                   ),
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 Center(
                   child: GestureDetector(
                   onTap: (){
                       Navigator.pushNamed(context, ForgetPassword.id);
                   },
-                    child: Text('Forgot Password?',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Colors.white
-                    ),),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text('Forgot Password',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: Colors.white
+                        ),),
+                        SizedBox(
+                          width: 3,
+                        ),
+                        Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
+                            color: whiteColor,
+                            shape: BoxShape.circle
+                          ),
+                          child: Center(
+                            child: Text('?',
+                            style: TextStyle(
+                              color: mainColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18
+                            ),),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(

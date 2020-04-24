@@ -1,14 +1,29 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:elearn/Dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
 class UserContainer2 extends StatefulWidget {
+
+  final coins;
+  final username;
+  final url;
+  final docId;
+
+  UserContainer2({this.coins,this.url,this.username,this.docId});
+
   @override
   _UserContainer2State createState() => _UserContainer2State();
 }
 
 class _UserContainer2State extends State<UserContainer2> {
+
+  NetworkImage _image;
+  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  Firestore _firestore = Firestore.instance;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -29,11 +44,13 @@ class _UserContainer2State extends State<UserContainer2> {
             Container(
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  image: DecorationImage(image: AssetImage('assets/images/download.jpg'),
-                    fit: BoxFit.cover,)
               ),
               height: 60,
               width: 60,
+              child: _image == null
+                  ? Center(child: Image.asset('assets/images/download.jpg',
+                fit: BoxFit.fill,))
+                  : Image.network(widget.url,fit: BoxFit.fill,),
             ),
             SizedBox(
               width: 10,
@@ -50,19 +67,43 @@ class _UserContainer2State extends State<UserContainer2> {
                     children: <Widget>[
                       GestureDetector(
                         onTap: (){
-                          showDialog(context: context,
+                          showModalBottomSheet(
+                              context: context,
                               builder: (context){
-                                return dialog();
+                                return Container(
+                                  child: Wrap(
+                                    children: <Widget>[
+                                      ListTile(
+                                        title: Center(
+                                          child: Text('Delete User',
+                                          style: TextStyle(
+                                            color: Color(0xffEB5757),
+                                            fontSize: 18
+                                          ),),
+                                        ),
+                                        onTap: (){
+
+
+                                              _firestore.collection('Users').document(widget.docId).delete();
+
+//                                          showDialog(context: context,
+//                                          builder: (context){
+//                                            return dialog();
+//                                          });
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                );
                               });
                         },
-                        child: Image.asset('assets/images/option.png'),
+                        child: Container(
+                            width: 50,
+                            child: Image.asset('assets/images/option.png')),
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text('User Name',
+                  Text(widget.username,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -76,7 +117,7 @@ class _UserContainer2State extends State<UserContainer2> {
                       SizedBox(
                         width: 5,
                       ),
-                      Text('120')
+                      Text(widget.coins.toString())
                     ],
                   )
                 ],

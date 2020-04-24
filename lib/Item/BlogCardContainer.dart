@@ -3,37 +3,82 @@ import 'package:elearn/BlogView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 
 class BlogCardContainer extends StatefulWidget {
 
   final String url;
   final String title;
   final String writer;
-//  final Timestamp date;
+  final String date;
   final String description;
+  final String summary;
 
-  BlogCardContainer({this.url,this.writer,this.description,this.title});
+  BlogCardContainer({this.url,this.writer,this.description,this.title,this.date,this.summary});
   @override
   _BlogCardContainerState createState() => _BlogCardContainerState();
 }
 
 class _BlogCardContainerState extends State<BlogCardContainer> {
+
+  static final MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+    keywords: <String>['flutterio', 'beautiful apps'],
+    contentUrl: 'https://flutter.io',
+    childDirected: false,
+    testDevices: <String>[], // Android emulators are considered test devices
+  );
+
+
+
+  InterstitialAd myInterstitial = InterstitialAd(
+    adUnitId: InterstitialAd.testAdUnitId,
+    //  "ca-app-pub-7843103597413736/9794185963",
+    targetingInfo: targetingInfo,
+    listener: (MobileAdEvent event) {
+      print("InterstitialAd event is $event");
+    },
+  );
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    FirebaseAdMob.instance.initialize(
+        appId: "ca-app-pub-7843103597413736~7341135211");
+  }
+
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+
+    myInterstitial.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
 
     var media = MediaQuery.of(context).size;
-    var now = DateTime.now();
+    var now = DateTime.parse(widget.date);
 
     return Column(
       children: <Widget>[
         GestureDetector(
           onTap: (){
+            myInterstitial
+              ..load()
+              ..show(
+                anchorType: AnchorType.bottom,
+                anchorOffset: 0.0,
+                horizontalCenterOffset: 0.0,
+              );
             Navigator.push(context, MaterialPageRoute(
               builder: (context){
                 return BlogView(url: widget.url,
                     title: widget.title,
                     writer: widget.writer,
-                    description: widget.description);
+                    description: widget.description,
+                label: 'Written By: ',);
               }
             ));
           },
@@ -77,15 +122,15 @@ class _BlogCardContainerState extends State<BlogCardContainer> {
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
                             ),),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(widget.description,
+//                          SizedBox(
+//                            height: 10,
+//                          ),
+                          Text(widget.summary,
                             style: TextStyle(
                               fontSize: 15,
                             ),),
                           SizedBox(
-                            height: 10,
+                            height: 5,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -23,11 +23,12 @@ class _CoinsScreenState extends State<CoinsScreen> {
           fontSize: 20,
         ),),
         backgroundColor: mainColor,
-        leading: GestureDetector(
-            onTap: (){
-
-            },
-            child: Icon(Icons.arrow_back_ios)),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios,
+            color: whiteColor,),
+            onPressed: (){
+          Navigator.pop(context);
+        })
       ),
       body: Stack(
         children: <Widget>[

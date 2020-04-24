@@ -10,8 +10,10 @@ class InfoContainer extends StatefulWidget {
   final String description;
   final String url;
   final String category;
+  final String date;
+  final String summary;
 
-  InfoContainer({this.title,this.description,this.url,this.category});
+  InfoContainer({this.title,this.description,this.url,this.category,this.date,this.summary});
   @override
   _InfoContainerState createState() => _InfoContainerState();
 }
@@ -21,19 +23,22 @@ class _InfoContainerState extends State<InfoContainer> {
 Widget build(BuildContext context) {
 
   var media = MediaQuery.of(context).size;
-  var now = DateTime.now();
+  var now = DateTime.parse(widget.date);
+
 
   return Column(
     children: <Widget>[
       GestureDetector(
         onTap: (){
-//            Navigator.push(context, MaterialPageRoute(
-//                builder: (context){
-//                    return BlogView(url: widget.url,
-//                        title: widget.title,
-//                        description: widget.description);
-//                }
-//            ));
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context){
+                    return BlogView(url: widget.url,
+                        title: widget.title,
+                        description: widget.description,
+                    label: 'Category: ',
+                    writer: widget.category,);
+                }
+            ));
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -59,9 +64,8 @@ Widget build(BuildContext context) {
                         bottomLeft: Radius.circular(5),
                       ),
                     ),
-                    child: Image.asset('assets/images/Cancer.png',
-                    fit: BoxFit.fill,)
-                    //Image.network(widget.url,fit: BoxFit.fill)
+                    child:
+                    Image.network(widget.url,fit: BoxFit.fill)
                 ),
                 SizedBox(
                   width: 10,
@@ -73,7 +77,7 @@ Widget build(BuildContext context) {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          'Title',
+                          widget.title,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
@@ -81,7 +85,7 @@ Widget build(BuildContext context) {
                         SizedBox(
                           height: 10,
                         ),
-                        Text("widget.description",
+                        Text(widget.summary,
                           style: TextStyle(
                             fontSize: 15,
                           ),),
@@ -91,20 +95,11 @@ Widget build(BuildContext context) {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Container(child: Row(
-                              children: <Widget>[
-                                Text('Written By: ',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold
-                                  ),),
-                                Text("widget.category",
-                                  style: TextStyle(
-                                      color: mainColor
-                                  ),),
-                              ],
-                            ),
-                            ),
-//                            Text(DateFormat('dd-MM-yyy').format(now))
+                            Text(widget.category,
+                              style: TextStyle(
+                                  color: mainColor
+                              ),),
+                            Text(DateFormat('dd-MM-yyy').format(now))
                           ],
                         ),
                       ],

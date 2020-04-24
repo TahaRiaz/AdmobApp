@@ -1,3 +1,4 @@
+import 'package:elearn/BlogView.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -10,8 +11,10 @@ class AdminInfoContainer extends StatefulWidget {
   final String description;
   final String url;
   final String category;
+  final String summary;
+  final String date;
 
-  AdminInfoContainer({this.title,this.description,this.url,this.category});
+  AdminInfoContainer({this.title,this.description,this.url,this.category,this.summary,this.date});
   @override
   _AdminInfoContainerState createState() => _AdminInfoContainerState();
 }
@@ -21,17 +24,18 @@ class _AdminInfoContainerState extends State<AdminInfoContainer> {
   Widget build(BuildContext context) {
 
     var media = MediaQuery.of(context).size;
-    var now = DateTime.now();
+    var now = DateTime.parse(widget.date);
 
     return GestureDetector(
       onTap: (){
-//            Navigator.push(context, MaterialPageRoute(
-//                builder: (context){
-//                    return BlogView(url: widget.url,
-//                        title: widget.title,
-//                        description: widget.description);
-//                }
-//            ));
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context){
+                    return BlogView(url: widget.url,
+                        title: widget.title,
+                        description: widget.description,
+                    );
+                }
+            ));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -76,7 +80,7 @@ class _AdminInfoContainerState extends State<AdminInfoContainer> {
                       SizedBox(
                         height: 10,
                       ),
-                      Text(widget.description,
+                      Text(widget.summary,
                         style: TextStyle(
                           fontSize: 15,
                         ),),
@@ -86,19 +90,10 @@ class _AdminInfoContainerState extends State<AdminInfoContainer> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Container(child: Row(
-                            children: <Widget>[
-                              Text('Written By: ',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold
-                                ),),
-                              Text(widget.category,
-                                style: TextStyle(
-                                    color: mainColor
-                                ),),
-                            ],
-                          ),
-                          ),
+                          Text(widget.category,
+                            style: TextStyle(
+                                color: mainColor
+                            ),),
                           Text(DateFormat('dd-MM-yyy').format(now))
                         ],
                       ),

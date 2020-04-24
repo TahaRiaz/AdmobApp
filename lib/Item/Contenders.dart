@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:elearn/Dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -5,11 +6,31 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Contenders extends StatefulWidget {
 
+  final username;
+  final blogs;
+  final coins;
+  final url;
+  final docId;
+
+  Contenders({this.url,this.username,this.coins,this.blogs,this.docId});
+
   @override
   _ContendersState createState() => _ContendersState();
 }
 
 class _ContendersState extends State<Contenders> {
+
+  NetworkImage _image;
+  Firestore _firestore = Firestore.instance;
+  int blog;
+
+  Future test(String uid){
+    Stream<QuerySnapshot> snapshot =  _firestore
+        .collection('Users')
+        .document('$uid').collection('MyBlogs').snapshots();
+    return snapshot.length;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -30,11 +51,13 @@ class _ContendersState extends State<Contenders> {
             Container(
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  image: DecorationImage(image: AssetImage('assets/images/download.jpg'),
-                    fit: BoxFit.cover,)
               ),
               height: 60,
               width: 60,
+              child: _image == null
+                  ? Center(child: Image.asset('assets/images/download.jpg',
+                fit: BoxFit.fill,))
+                  : Image.network(widget.url,fit: BoxFit.fill,),
             ),
             SizedBox(
               width: 10,
@@ -47,7 +70,7 @@ class _ContendersState extends State<Contenders> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text('User Name',
+                      Text(widget.username,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -56,7 +79,7 @@ class _ContendersState extends State<Contenders> {
                         onTap: (){
                           showDialog(context: context,
                           builder: (context){
-                            return AwardDialog();
+                            return AwardDialog(coins: widget.coins,uid: widget.docId,);
                           });
                         },
                         child: Padding(
@@ -99,7 +122,7 @@ class _ContendersState extends State<Contenders> {
                       SizedBox(
                         width: 3,
                       ),
-                      Text('15 Blogs',
+                      Text('${widget.blogs} Blogs',
                         style: TextStyle(
                             fontSize: 18
                         ),),

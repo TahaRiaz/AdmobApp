@@ -7,8 +7,11 @@ import 'package:elearn/AdminPanel/Users.dart';
 import 'package:elearn/AllItem.dart';
 import 'package:elearn/Blog.dart';
 import 'package:elearn/BlogView.dart';
+import 'package:elearn/CloudFunction.dart';
 import 'package:elearn/Description.dart';
 import 'package:elearn/Description2.dart';
+import 'package:elearn/AdminPanel/ArticleEditScreen.dart';
+import 'package:elearn/EditBlog.dart';
 import 'package:elearn/InviteFriends.dart';
 import 'package:elearn/CoinsScreen.dart';
 import 'package:elearn/NewBlog.dart';
@@ -43,7 +46,7 @@ class _MyAppState extends State<MyApp> {
 //      locale: DevicePreview.of(context).locale, // <--- Add the locale
 //      builder: DevicePreview.appBuilder,
 
-      initialRoute: Articles.id,
+      initialRoute: SplashScreen.id,
       routes: {
         SplashScreen.id:(context) => SplashScreen(),
         Login.id:(context) =>Login(),
@@ -64,7 +67,10 @@ class _MyAppState extends State<MyApp> {
         AdminBlogList.id: (context) => AdminBlogList(),
         CoinsArea.id: (context) => CoinsArea(),
         Users.id: (context) => Users(),
-        Articles.id: (context) => Articles()
+        Articles.id: (context) => Articles(),
+        ArticleEditScreen.id: (context) => ArticleEditScreen(),
+        EditBlog.id: (context) => EditBlog(),
+        CloudFunction.id: (context) => CloudFunction(),
 
       },
     );

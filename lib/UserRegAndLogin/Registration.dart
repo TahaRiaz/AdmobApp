@@ -1,10 +1,15 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:elearn/FIrebaseAuth.dart';
 import 'package:elearn/UserRegAndLogin/Login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:elearn/Constant.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Registration extends StatefulWidget {
 
@@ -22,6 +27,10 @@ class _RegistrationState extends State<Registration> {
   bool _validate = false;
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   FirebaseUser user;
+  Firestore _firestore = Firestore.instance;
+  File _image;
+  String url;
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,140 +38,124 @@ class _RegistrationState extends State<Registration> {
 
       body: Stack(
         children: <Widget>[
+          Container(
+            width: MediaQuery.of(context).size.width,
+            child: Image.asset('assets/images/backgrnd.png',
+              fit: BoxFit.cover,),
+          ),
           SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Image(image: AssetImage('assets/images/Group5.png')),
-                SizedBox(
-                  height: 20,
-                ),
-                Center(
-                  child: Text('Create Account',
-                    style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w900
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    height: 80,
+                  ),
+                  Center(
+                    child: Container(
+                      width: 110,
+                      height: 110,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(55),
+                      ),
+                      child: Image.asset('assets/images/nobody.png',)
+
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Center(
-                  child: Text('Fill up all the details',
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Center(
+                    child: Text('Create Account',
+                      style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Center(
+                    child: Text('Fill All The Details',
+                      style: TextStyle(
+                          fontSize: 17,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600
+                      ),),
+                  ),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  TextField(
                     style: TextStyle(
-                        fontSize: 17,
-                        color: Color(0xff5E5E5E),
-                        fontWeight: FontWeight.w600
-                    ),),
-                ),
-                SizedBox(
-                  height: 60,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25),
-                  child: TextField(
+                        color: whiteColor,
+                        fontSize: 20
+                    ),
                     controller: _controllerUser,
                     decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(color: mainColor),
-                            borderRadius: BorderRadius.circular(5)
-                        ),
-                        prefixIcon: Padding(
-                          padding: EdgeInsets.only(top: 10,left: 10),
-                          child: FaIcon(FontAwesomeIcons.userAlt,
-                            color: mainColor,),
-                        ),
-                        hintText: 'User Name',
-                     // errorText: _validate?'Please fill this box':null
+                        hintText: 'Enter User Name',
+                        hintStyle: TextStyle(
+                            color: Colors.white
+                        )
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25),
-                  child: TextField(
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
+                    style: TextStyle(
+                        color: whiteColor,
+                        fontSize: 20
+                    ),
                     keyboardType: TextInputType.emailAddress,
                     controller: _controllerEmail,
                     decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(color: mainColor),
-                            borderRadius: BorderRadius.circular(5)
-                        ),
-                        prefixIcon: Icon(Icons.email,
-                          color: mainColor,),
-                        hintText: 'email@email.com',
-                       // errorText: _validate?'Please fill this box':null
+                        hintText: 'Enter Email',
+                        hintStyle: TextStyle(
+                            color: Colors.white
+                        )
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25),
-                  child: TextField(
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
+                    style: TextStyle(
+                        color: whiteColor
+                    ),
                     obscureText: true,
                     controller: _controllerPassword,
                     decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(color: mainColor),
-                            borderRadius: BorderRadius.circular(5)
-                        ),
-                        prefixIcon: Icon(Icons.lock,
-                          color: mainColor,),
-                        hintText: 'Password',
-                       // errorText: _validate?'Please fill this box':null
+                        hintText: 'Enter Password',
+                        hintStyle: TextStyle(
+                            color: Colors.white
+                        )
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25),
-                  child: TextField(
-                    controller: _controllerCPassword,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(color: mainColor),
-                            borderRadius: BorderRadius.circular(5)
-                        ),
-                        prefixIcon: Icon(Icons.lock,
-                          color: mainColor,),
-                        hintText: 'Confirm Password',
-                       // errorText: _validate?'Please fill this box':null
-                    ),
+                  SizedBox(
+                    height: 20,
                   ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Center(
-                  child: Container(
-                    width: 140,
-                    height: 40,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5)
-                    ),
-                    child: Builder(
-                      builder:(context) => FlatButton(
-                        color: mainColor,
-                        onPressed: () async{
-                            setState(() async {
+                  Builder(
+                    builder:(context) => TextField(
+                      style: TextStyle(
+                        color: whiteColor
+                      ),
+                      controller: _controllerCPassword,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        suffixIcon: GestureDetector(
+                          onTap: ()async{
+                            setState(() async{
 
                               if(_controllerUser.text.isEmpty||_controllerEmail.text.isEmpty||_controllerPassword.text.isEmpty||_controllerCPassword.text.isEmpty){
                                 Scaffold.of(context).showSnackBar(
                                     SnackBar(content: Text('Please fill all the boxes'),
-                                  duration: Duration(seconds: 2),
-                                  behavior: SnackBarBehavior.fixed,
-                                ));
+                                      duration: Duration(seconds: 2),
+                                      behavior: SnackBarBehavior.fixed,
+                                    ));
                               }
                               else if(_controllerPassword.text != _controllerCPassword.text){
                                 Scaffold.of(context).showSnackBar(
@@ -171,70 +164,96 @@ class _RegistrationState extends State<Registration> {
                                       behavior: SnackBarBehavior.fixed,
                                     ));}
                               else{
-                              try{
+                                try{
 
-                                AuthResult result = await _firebaseAuth.createUserWithEmailAndPassword(email: _controllerEmail.text, password: _controllerPassword.text);
-                                user = result.user;
+                                  AuthResult result = await _firebaseAuth.createUserWithEmailAndPassword(email: _controllerEmail.text, password: _controllerPassword.text);
+                                  user = result.user;
 
 
-                                Scaffold.of(context).showSnackBar(
-                                    SnackBar(content: Text('SignUp Succesful'),
-                                      duration: Duration(seconds: 2),
-                                      behavior: SnackBarBehavior.fixed,
-                                    ));
-                                _controllerEmail.clear();
-                                _controllerUser.clear();
-                                _controllerPassword.clear();
-                                _controllerCPassword.clear();
-                              }
-                              catch(e){
-                                Scaffold.of(context).showSnackBar(
-                                    SnackBar(content: Text(e.message),
-                                      duration: Duration(seconds: 2),
-                                      behavior: SnackBarBehavior.fixed,
-                                    ));
-                              }
+                                  Scaffold.of(context).showSnackBar(
+                                      SnackBar(content: Text('SignUp Succesful'),
+                                        duration: Duration(seconds: 2),
+                                        behavior: SnackBarBehavior.fixed,
+                                      ));
 
-                            }});
-                        },
-                        child: Text('Register',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20
-                          ),),
+                                  _firestore.collection('Users').document('${user.uid}').setData({
+                                    'username': _controllerUser.text,
+                                    'email': _controllerEmail.text,
+                                    'coins': 0,
+                                    'image': '',
+                                    'uid': user.uid,
+                                    'blogs': 0
+                                  });
+                                  _controllerEmail.clear();
+                                  _controllerUser.clear();
+                                  _controllerPassword.clear();
+                                  _controllerCPassword.clear();
+                                }
+                                catch(e){
+                                  Scaffold.of(context).showSnackBar(
+                                      SnackBar(content: Text(e.message),
+                                        duration: Duration(seconds: 2),
+                                        behavior: SnackBarBehavior.fixed,
+                                      ));
+                                }
+
+                              }});
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: whiteColor,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(Icons.arrow_forward,
+                                color: mainColor),
+                          ),
+                        ),
+                          hintText: 'Confirm Password',
+                          hintStyle: TextStyle(
+                              color: Colors.white
+                          )
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 50,bottom: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text('Already have an account? ',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                        ),),
-                      SizedBox(
-                        width: 5,
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 50,bottom: 20),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5)
                       ),
-                      GestureDetector(
-                        onTap: (){
-                          Navigator.pushNamed(context, Login.id);
-                        },
-                        child: Text('Login Now',
-                          style: TextStyle(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('Already Have An Account',
+                            style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
-                              color: mainColor
-                          ),),
+                            ),),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.pushNamed(context, Login.id);
+                            },
+                            child: Text('Login Now',
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                  color: mainColor
+                              ),),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                )
-              ],
+                    ),
+                  )
+                ],
+              ),
             ),
           )
         ],

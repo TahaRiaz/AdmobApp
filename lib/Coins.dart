@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Coins extends StatelessWidget {
@@ -24,7 +25,7 @@ class Coins extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Container(
-              width: 50,
+              width: 70,
               height: 90,
               decoration: BoxDecoration(
                   border: BorderDirectional(
@@ -36,11 +37,13 @@ class Coins extends StatelessWidget {
             SizedBox(
               width: 10,
             ),
-            Padding(
-              padding: EdgeInsets.only(top: 5),
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  SizedBox(
+                    height: 5,
+                  ),
                   Text('40 Points Added!',
                     style: TextStyle(
                         color: Color(0xffFBCA0C),
@@ -87,12 +90,17 @@ class Coins extends StatelessWidget {
                   SizedBox(
                     height: 5,
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 180),
-                    child: Text(date,
-                      style: TextStyle(
-                          color: Colors.grey
-                      ),),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Text(date,
+                        style: TextStyle(
+                            color: Colors.grey
+                        ),),
+                      SizedBox(
+                        width: 5,
+                      )
+                    ],
                   )
                 ],
               ),
